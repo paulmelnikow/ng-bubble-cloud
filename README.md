@@ -1,7 +1,7 @@
 ng-bubble-cloud
 ===============
 
-Simple [bubble-cloud][] directive for [AngularJS][] + [D3][]. 
+Simple [bubble-cloud][bubble cloud] directive for [AngularJS][] + [D3][]. 
 
 Get started:
 
