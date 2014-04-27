@@ -1,0 +1,15 @@
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+	-webkit-appearance: none;
+}
+
+.accounts li {
+	display: block;
+	margin-top: 5px;
+	margin-bottom: 5px;
+}
+
+.accounts .name {
+	width: 250px;
+	display: inline-block;
+}

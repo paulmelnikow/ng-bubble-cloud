@@ -1,0 +1,43 @@
+<h3>Assets</h3>
+
+<ul class="accounts">
+	<li ng-repeat="item in assets">
+		<input type="text" ng-model="item.name" />
+		<input type="number" ng-model="item.balance" />
+		<button type="button"
+			class="btn btn-xs btn-danger"
+			ng-click="remove(assets, item)">
+			Remove
+		</button>
+	</li>
+</ul>
+
+<button type="button" class="btn btn-sm" ng-click="new(assets)">Add</button>
+
+<h3>Liabilities</h3>
+
+<ul class="accounts">
+	<li ng-repeat="item in liabilities">
+		<input type="text" ng-model="item.name" />
+		<input type="number" ng-model="item.balance" />
+		<button type="button"
+			class="btn btn-xs btn-danger"
+			ng-click="remove(liabilities, item)">
+			Remove
+		</button>
+	</li>
+</ul>
+
+<button type="button" class="btn btn-sm" ng-click="new(liabilities)">Add</button>
+
+<br clear="both">
+
+<bubble-cloud
+	diameter="480"
+	watch="true"
+	data="chart_data"
+	value-attr="balance"
+	label-attr="name"
+	fill-color-fn="fill_color"
+	label-color-fn="label_color"
+></bubble>
