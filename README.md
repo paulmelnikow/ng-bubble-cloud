@@ -6,7 +6,7 @@ Simple [bubble-cloud][bubble cloud] directive for [AngularJS][] + [D3][].
 Get started:
 
 ```js
-$scope.chart_data = {
+$scope.net_worth = {
     assets: [
         { name: 'Checking & Savings', balance: 2000 },
         { name: 'Money Market', balance: 11000 },
@@ -33,7 +33,7 @@ $scope.label_color = function (group) {
 <bubble-cloud
 	diameter="480"
 	watch="true"
-	data="chart_data"
+	data="net_worth"
 	value-attr="balance"
 	label-attr="name"
 	fill-color-fn="fill_color"
