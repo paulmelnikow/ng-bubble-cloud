@@ -65,7 +65,7 @@ Install ng-bubble-cloud by running:
 <script src="path/to/bower_components/underscore/underscore.js"></script>
 <script src="path/to/bower_components/angular/angular.js"></script>
 <script src="path/to/bower_components/d3/d3.js"></script>
-<script src="path/to/bower_components/ng-bubble-cloud/src/bubble.js"></script>
+<script src="path/to/bower_components/ng-bubble-cloud/src/bubble-cloud.js"></script>
 ```
 
 
