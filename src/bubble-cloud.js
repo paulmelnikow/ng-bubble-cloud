@@ -40,6 +40,9 @@ angular.module('bubbleCloud', [])
             // reloading the chart (optional)
             renderChartFn: '=?',
 
+	    // A function which allows to provide the custom tooltip
+	    toolTipFn: '@',
+
         },
 
         link: function (scope, element, attrs, ctrl) {
@@ -101,7 +104,11 @@ angular.module('bubbleCloud', [])
         return flattened_data;
 
     }
-
+/*
+    function tool_tip_function(datum) {
+        return datum.object[labelAttr] + ': ' + label_format_fn(datum.object[valueAttr]);
+    };
+*/
     // Initialize the controller with the given SVG element
     // (wrapped in an array)
     this.init = function (svg_element) {
@@ -145,6 +152,13 @@ angular.module('bubbleCloud', [])
             $scope.label_color_fn = function () { return 'black'; };
         }
 
+        if ($scope.toolTipFn) {
+            var toolTipFn = $scope.$parent[$scope.toolTipFn];
+            if (! _(toolTipFn).isFunction())
+                throw new Error('tool-tip-fn attr must be a function in the parent scope');
+            $scope.tool_tip_fn = toolTipFn;
+        } 
+
         $scope.label_format_fn = d3.format(',d');
     };
 
@@ -177,6 +191,7 @@ angular.module('bubbleCloud', [])
         var label_format_fn = $scope.label_format_fn;
         var fill_color_fn = $scope.fill_color_fn;
         var label_color_fn = $scope.label_color_fn;
+        var tool_tip_fn = $scope.tool_tip_fn;
 
         node.attr('transform', function (datum) {
             return 'translate(' + datum.x + ',' + datum.y + ')';
@@ -184,7 +199,8 @@ angular.module('bubbleCloud', [])
 
         node.select('title')
             .text(function (datum) {
-                return datum.object[labelAttr] + ': ' + label_format_fn(datum.object[valueAttr]);
+                //return datum.object[labelAttr] + ': ' + label_format_fn(datum.object[valueAttr]);
+                return tool_tip_fn(datum);
             });
 
         node.select('circle')
