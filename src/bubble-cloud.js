@@ -21,6 +21,9 @@ angular.module('bubbleCloud', [])
             // The attribute containing a data object's label (optional)
             labelAttr: '@',
 
+            // The attribute containing a data object's label (optional)
+            labelAttr: '@',
+
             // The attribute containing a data object's group
             // (required if data is an array)
             groupAttr: '@',
@@ -33,15 +36,16 @@ angular.module('bubbleCloud', [])
             // label color. Optional. The default is black.
             labelColorFn: '@',
 
+            // A function which takes a data object and returns the tooltip
+            // text. The default is to combine the label and the value.
+            tooltipFormatFn: '@',
+
             // Overall diameter of the chart, in pixels
             diameter: '@',
 
             // A function name to publish into the parent scope, to allow
             // reloading the chart (optional)
             renderChartFn: '=?',
-
-	    // A function which allows to provide the custom tooltip
-	    toolTipFn: '@',
 
         },
 
@@ -104,11 +108,7 @@ angular.module('bubbleCloud', [])
         return flattened_data;
 
     }
-/*
-    function tool_tip_function(datum) {
-        return datum.object[labelAttr] + ': ' + label_format_fn(datum.object[valueAttr]);
-    };
-*/
+
     // Initialize the controller with the given SVG element
     // (wrapped in an array)
     this.init = function (svg_element) {
@@ -152,14 +152,12 @@ angular.module('bubbleCloud', [])
             $scope.label_color_fn = function () { return 'black'; };
         }
 
-        if ($scope.toolTipFn) {
-            var toolTipFn = $scope.$parent[$scope.toolTipFn];
-            if (! _(toolTipFn).isFunction())
-                throw new Error('tool-tip-fn attr must be a function in the parent scope');
-            $scope.tool_tip_fn = toolTipFn;
-        } 
-
-        $scope.label_format_fn = d3.format(',d');
+        if ($scope.tooltipFormatFn) {
+            var tooltipFormatFn = $scope.$parent[$scope.tooltipFormatFn];
+            if (! _(tooltipFormatFn).isFunction())
+                throw new Error('tool-tip-format-fn attr must be a function in the parent scope');
+            $scope.tooltip_format_fn = tooltipFormatFn;
+        }
     };
 
     // Get the latest data and render the chart
@@ -191,7 +189,7 @@ angular.module('bubbleCloud', [])
         var label_format_fn = $scope.label_format_fn;
         var fill_color_fn = $scope.fill_color_fn;
         var label_color_fn = $scope.label_color_fn;
-        var tool_tip_fn = $scope.tool_tip_fn;
+        var tooltip_format_fn = $scope.tooltip_format_fn;
 
         node.attr('transform', function (datum) {
             return 'translate(' + datum.x + ',' + datum.y + ')';
@@ -199,8 +197,11 @@ angular.module('bubbleCloud', [])
 
         node.select('title')
             .text(function (datum) {
-                //return datum.object[labelAttr] + ': ' + label_format_fn(datum.object[valueAttr]);
-                return tool_tip_fn(datum);
+                if (tooltip_format_fn) {
+                    return tooltip_format_fn(datum);
+                } else {
+                    return datum.object[labelAttr] + ': ' + d3.format(',d')(datum.object[valueAttr]);
+                }
             });
 
         node.select('circle')
