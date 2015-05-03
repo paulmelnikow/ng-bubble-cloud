@@ -21,6 +21,9 @@ angular.module('bubbleCloud', [])
             // The attribute containing a data object's label (optional)
             labelAttr: '@',
 
+            // The attribute containing a data object's label (optional)
+            labelAttr: '@',
+
             // The attribute containing a data object's group
             // (required if data is an array)
             groupAttr: '@',
@@ -32,6 +35,10 @@ angular.module('bubbleCloud', [])
             // A function which takes a group name and returns the desired
             // label color. Optional. The default is black.
             labelColorFn: '@',
+
+            // A function which takes a data object and returns the tooltip
+            // text. The default is to combine the label and the value.
+            tooltipFormatFn: '@',
 
             // Overall diameter of the chart, in pixels
             diameter: '@',
@@ -145,7 +152,12 @@ angular.module('bubbleCloud', [])
             $scope.label_color_fn = function () { return 'black'; };
         }
 
-        $scope.label_format_fn = d3.format(',d');
+        if ($scope.tooltipFormatFn) {
+            var tooltipFormatFn = $scope.$parent[$scope.tooltipFormatFn];
+            if (! _(tooltipFormatFn).isFunction())
+                throw new Error('tool-tip-format-fn attr must be a function in the parent scope');
+            $scope.tooltip_format_fn = tooltipFormatFn;
+        }
     };
 
     // Get the latest data and render the chart
@@ -177,6 +189,7 @@ angular.module('bubbleCloud', [])
         var label_format_fn = $scope.label_format_fn;
         var fill_color_fn = $scope.fill_color_fn;
         var label_color_fn = $scope.label_color_fn;
+        var tooltip_format_fn = $scope.tooltip_format_fn;
 
         node.attr('transform', function (datum) {
             return 'translate(' + datum.x + ',' + datum.y + ')';
@@ -184,7 +197,11 @@ angular.module('bubbleCloud', [])
 
         node.select('title')
             .text(function (datum) {
-                return datum.object[labelAttr] + ': ' + label_format_fn(datum.object[valueAttr]);
+                if (tooltip_format_fn) {
+                    return tooltip_format_fn(datum);
+                } else {
+                    return datum.object[labelAttr] + ': ' + d3.format(',d')(datum.object[valueAttr]);
+                }
             });
 
         node.select('circle')

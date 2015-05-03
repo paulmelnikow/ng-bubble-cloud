@@ -26,6 +26,10 @@ angular.module('bubbleCloudTest')
         return group === 'assets' ? 'black' : '#8c8c8c';
     }
 
+    $scope.tooltip_format = function (datum) {
+        return datum.object.name + ': $' + d3.format(',d')(datum.object.balance);
+    }
+
     $scope.new = function (collection) {
         // Pass $scope.assets or $scope.liabilities to create a new item
         collection.push({name: ''});
