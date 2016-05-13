@@ -38,7 +38,7 @@ $scope.label_color = function (group) {
 	label-attr="name"
 	fill-color-fn="fill_color"
 	label-color-fn="label_color"
-></bubble>
+></bubble-cloud>
 ```
 
 ![Net worth example][]
