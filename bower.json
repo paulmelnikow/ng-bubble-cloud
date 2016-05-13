@@ -5,7 +5,7 @@
     "Paul Melnikow <github@paulmelnikow.com>"
   ],
   "description": "Simple bubble cloud directive for AngularJS + D3",
-  "main": "src/bubble.js",
+  "main": "src/bubble-cloud.js",
   "keywords": [
     "angular",
     "chart",
