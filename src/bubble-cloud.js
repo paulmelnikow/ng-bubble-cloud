@@ -21,9 +21,6 @@ angular.module('bubbleCloud', [])
             // The attribute containing a data object's label (optional)
             labelAttr: '@',
 
-            // The attribute containing a data object's label (optional)
-            labelAttr: '@',
-
             // The attribute containing a data object's group
             // (required if data is an array)
             groupAttr: '@',
