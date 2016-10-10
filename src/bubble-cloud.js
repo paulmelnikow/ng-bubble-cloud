@@ -33,6 +33,12 @@ angular.module('bubbleCloud', [])
             // label color. Optional. The default is black.
             labelColorFn: '@',
 
+            // The number by which the length of the label is divided by.
+            // (The text itself if often too long to fit inside the bubble,
+            // so needs to be shortened to around a third of its length.)
+            // Optional. Default: 3 (i.e. first 1/3 of text is used).
+            labelLengthDivisor: '=',
+
             // A function which takes a data object and returns the tooltip
             // text. The default is to combine the label and the value.
             tooltipFormatFn: '@',
@@ -188,6 +194,11 @@ angular.module('bubbleCloud', [])
         var label_color_fn = $scope.label_color_fn;
         var tooltip_format_fn = $scope.tooltip_format_fn;
 
+        var labelLengthDivisor = parseInt($scope.labelLengthDivisor);
+        if (isNaN(labelLengthDivisor)){
+          labelLengthDivisor = 3
+        }
+
         node.attr('transform', function (datum) {
             return 'translate(' + datum.x + ',' + datum.y + ')';
         });
@@ -215,7 +226,7 @@ angular.module('bubbleCloud', [])
             })
             .text(function (datum) {
                 var label = datum.object[labelAttr];
-                return label ? label.substring(0, datum.r / 3) : '';
+                return label ? label.substring(0, datum.r / labelLengthDivisor) : '';
             });
 
         // Handle removed nodes
