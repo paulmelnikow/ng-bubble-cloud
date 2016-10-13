@@ -195,7 +195,7 @@ angular.module('bubbleCloud', [])
         var tooltip_format_fn = $scope.tooltip_format_fn;
 
         var labelLengthDivisor = parseInt($scope.labelLengthDivisor);
-        if (!labelLengthDivisor || !isNaN(labelLengthDivisor)){ // reject 0 or invalid values
+        if (!labelLengthDivisor || isNaN(labelLengthDivisor)){ // reject 0 or invalid values
           labelLengthDivisor = 3
         }
 
