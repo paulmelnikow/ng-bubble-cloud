@@ -39,6 +39,10 @@ angular.module('bubbleCloud', [])
                 // Optional. Default: 3 (i.e. first 1/3 of text is used).
                 labelLengthDivisor: '=',
 
+                // Whether to append '...' to abbreviated labels.
+                // Optional. Default: false.
+                isLabelEllipsisUsed: '=',
+
                 // How spaced-out the bubbles are.
                 // (Negative values can be used to produce overlapping bubbles.)
                 // Optional. Default: 1.5.
@@ -236,7 +240,13 @@ angular.module('bubbleCloud', [])
                 })
                 .text(function (datum) {
                     var label = datum.object[labelAttr];
-                    return label ? label.substring(0, datum.r / labelLengthDivisor) : '';
+                    if (!label) return '';
+                    var labelLengthDesired = datum.r / labelLengthDivisor;
+                    var labelLengthOriginal = label.length;
+                    label = label.substring(0, labelLengthDesired);
+                    // append three dots to abbreviated labels, if desired
+                    if ($scope.isLabelEllipsisUsed && labelLengthDesired < labelLengthOriginal) label += '...';
+                    return label;
                 });
 
             // Handle removed nodes
