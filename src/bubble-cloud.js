@@ -21,9 +21,6 @@ angular.module('bubbleCloud', [])
             // The attribute containing a data object's label (optional)
             labelAttr: '@',
 
-            // The attribute containing a data object's label (optional)
-            labelAttr: '@',
-
             // The attribute containing a data object's group
             // (required if data is an array)
             groupAttr: '@',
@@ -35,6 +32,21 @@ angular.module('bubbleCloud', [])
             // A function which takes a group name and returns the desired
             // label color. Optional. The default is black.
             labelColorFn: '@',
+
+            // The number by which the length of the label is divided by.
+            // (The text itself if often too long to fit inside the bubble,
+            // so needs to be shortened to around a third of its length.)
+            // Optional. Default: 3 (i.e. first 1/3 of text is used).
+            labelLengthDivisor: '=',
+
+            // Whether to append '...' to abbreviated labels.
+            // Optional. Default: false.
+            isLabelEllipsisUsed: '=',
+
+            // How spaced-out the bubbles are.
+            // (Negative values can be used to produce overlapping bubbles.)
+            // Optional. Default: 1.5.
+            padding: '=',
 
             // A function which takes a data object and returns the tooltip
             // text. The default is to combine the label and the value.
@@ -118,6 +130,11 @@ angular.module('bubbleCloud', [])
 
         var diameter = parseInt($scope.diameter);
 
+        var padding = parseInt($scope.padding);
+        if (isNaN(padding)){ // reject invalid values
+            padding = 1.5;
+        }
+
         svg_element
             .attr('width', diameter)
             .attr('height', diameter)
@@ -132,7 +149,7 @@ angular.module('bubbleCloud', [])
                 return datum.object[valueAttr];
             })
             .size([diameter, diameter])
-            .padding(1.5);
+            .padding(padding);
 
         if ($scope.fillColorFn) {
             var fillColorFn = $scope.$parent[$scope.fillColorFn];
@@ -191,6 +208,11 @@ angular.module('bubbleCloud', [])
         var label_color_fn = $scope.label_color_fn;
         var tooltip_format_fn = $scope.tooltip_format_fn;
 
+        var labelLengthDivisor = parseInt($scope.labelLengthDivisor);
+        if (!labelLengthDivisor || isNaN(labelLengthDivisor)){ // reject 0 or invalid values
+            labelLengthDivisor = 3;
+        }
+
         node.attr('transform', function (datum) {
             return 'translate(' + datum.x + ',' + datum.y + ')';
         });
@@ -218,7 +240,13 @@ angular.module('bubbleCloud', [])
             })
             .text(function (datum) {
                 var label = datum.object[labelAttr];
-                return label ? label.substring(0, datum.r / 3) : '';
+                if (!label) return '';
+                var labelLengthDesired = datum.r / labelLengthDivisor;
+                var labelLengthOriginal = label.length;
+                label = label.substring(0, labelLengthDesired);
+                // append three dots to abbreviated labels, if desired
+                if ($scope.isLabelEllipsisUsed && labelLengthDesired < labelLengthOriginal) label += '...';
+                return label;
             });
 
         // Handle removed nodes
